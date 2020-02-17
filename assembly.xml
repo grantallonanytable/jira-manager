@@ -12,9 +12,6 @@
   </dependencySets>
   <fileSets>
     <fileSet>
-      <includes>
-        <include>logback-prod.xml</include>
-      </includes>
       <directory>${project.basedir}/src/main/resources</directory>
       <outputDirectory>lib</outputDirectory>
       <fileMode>0644</fileMode>

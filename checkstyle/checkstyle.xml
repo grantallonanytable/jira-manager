@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/djiraTasks/configuration_1_2.dtd">
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 
 <module name="Checker">
   <property name="charset" value="UTF-8"/>
 
   <module name="SuppressWarningsFilter" />
+  <module name="SuppressionFilter">
+    <property name="file" value="checkstyle/suppressions.xml"/>
+  </module>
   <!-- See http://checkstyle.sourceforge.net/config_misc.html#NewlineAtEndOfFile -->
   <module name="NewlineAtEndOfFile"/>
 

@@ -1,0 +1,195 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: jira-manager
+paths:
+  /api/jira-manager/updateLabels:
+    post:
+      tags:
+      - jira-manager
+      summary: Запрос updateLabels
+      description: Запрос updateLabels
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JiraManagerResponse'
+        '400':
+          description: Отсутсвует обязательный параметр
+        '403':
+          description: Доступ запрещен
+        '500':
+          description: Системное исключение
+        '509':
+          description: Превышен лимит времени на запрос
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLabelsRequest'
+        description: ---
+##
+  /api/jira-manager/updateDeadLine:
+    post:
+      tags:
+      - jira-manager
+      summary: Запрос updateDeadLine
+      description: Запрос updateDeadLine
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JiraManagerResponse'
+        '400':
+          description: Отсутсвует обязательный параметр
+        '403':
+          description: Доступ запрещен
+        '500':
+          description: Системное исключение
+        '509':
+          description: Превышен лимит времени на запрос
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDeadLineRequest'
+        description: ---
+##
+  /api/jira-manager/setScrum:
+    put:
+      tags:
+      - jira-manager
+      summary: SetScrum
+      description: SetScrum
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JiraManagerResponse'
+        '400':
+          description: Отсутсвует обязательный параметр
+        '403':
+          description: Доступ запрещен
+        '500':
+          description: Системное исключение
+        '509':
+          description: Превышен лимит времени на запрос
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetScrumRequest'
+        description: ---
+##
+  /api/jira-manager/report:
+    get:
+      tags:
+      - jira-manager
+      summary: Отчеты
+      description: Отчеты
+      responses:
+        '200':
+          description: Успешный запрос
+          content: file
+        '400':
+          description: Отсутсвует обязательный параметр
+        '403':
+          description: Доступ запрещен (пока нет)
+        '500':
+          description: Системное исключение (пока нет)
+        '509':
+          description: Превышен лимит времени на запрос (пока нет)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+        description: ---
+#######################################
+#######################################
+components:
+  schemas:
+    UpdateLabelsRequest:
+      type: object
+      description: Параметры для UpdateLabels
+      properties:
+        userName:
+          type: string
+          description: user Name
+          example: 'user'
+        password:
+          type: string
+          description: password
+          example: 'password'
+    UpdateDeadlineRequest:
+      type: object
+      description: Параметры для UpdateDeadline
+      properties:
+        userName:
+          type: string
+          description: user Name
+          example: 'user'
+        password:
+          type: string
+          description: password
+          example: 'password'
+    SetScrumRequest:
+      type: object
+      description: Параметры для SetScrum
+      properties:
+        userName:
+          type: string
+          description: user Name
+          example: 'user'
+        password:
+          type: string
+          description: password
+          example: 'password'
+    ReportRequest:
+      type: object
+      description: Параметры для SetScrum
+      properties:
+        userName:
+          type: string
+          description: user Name
+          example: 'user'
+        password:
+          type: string
+          description: password
+          example: 'password'
+        issueId:
+          type: string
+          description: issueId
+          example: 'TDS-123'
+        isFull:
+          type: boolean
+          description: isFull
+          example: 'false'
+        dateFrom:
+          type: string
+          description: date from, dd-MM-yyyy HH:mm:ss
+          example: '01-01-2001 12:00:00'
+        dateTo:
+          type: string
+          description: date to, dd-MM-yyyy HH:mm:ss
+          example: '01-01-2001 13:00:00'
+        reportPath:
+          type: string
+          description: ???
+          example: '????'
+#######################################
+    JiraManagerResponse:
+      type: object
+      description: Ответ на запрос jiraManager
+      properties:
+        error:
+          type: string
+          description: текст ошибки, если есть
+          example: "Ошибка"
+#######################################

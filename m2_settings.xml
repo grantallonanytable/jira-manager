@@ -4,12 +4,12 @@
                       http://maven.apache.org/xsd/settings-1.0.0.xsd">
   <servers>
     <server>
-      <id>todo_repo_name</id>
+      <id>TODO_REPO_NAME</id>
       <username>NEXUS_USER</username>
       <password>NEXUS_PASSWORD</password>
     </server>
     <server>
-      <id>todo_repo_host:8888</id>
+      <id>TODO_REPO_HOST:8888</id>
       <username>NEXUS_USER</username>
       <password>NEXUS_PASSWORD</password>
     </server>

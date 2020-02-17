@@ -8,22 +8,22 @@ cache:
 
 services:
 - name: docker:18-dind
-  command: ["--insecure-registry=todo_repo_host:8888"]
+  command: ["--insecure-registry=TODO_REPO_HOST:8888"]
 
 variables:
   MAVEN_USER_HOME: .m2
   MAVEN_OPTS: >-
     -Duser.home=$CI_PROJECT_DIR
-    -Dhttp.proxyHost=todo_proxy-01
+    -Dhttp.proxyHost=TODO_PROXY
     -Dhttp.proxyPort=80
-    -Dhttps.proxyHost=todo_proxy-01
+    -Dhttps.proxyHost=TODO_PROXY
     -Dhttps.proxyPort=80
-    -Dhttp.nonProxyHosts=todo_repo_host
+    -Dhttp.nonProxyHosts=TODO_REPO_HOST
   DOCKER_HOST: tcp://docker:2375
-  K8S_SERVER: https://todo-kubernetes-host:6443
-  HTTPS_PROXY: http://todo_proxy-01:80
-  HTTP_PROXY: http://todo_proxy-01:80
-  NO_PROXY: todo-kubernetes-host,todo_repo_host,docker
+  K8S_SERVER: https://TODO_K8S_HOST:6443
+  HTTPS_PROXY: http://TODO_PROXY:80
+  HTTP_PROXY: http://TODO_PROXY:80
+  NO_PROXY: TODO_K8S_HOST,TODO_REPO_HOST,docker
 before_script:
 - mkdir -p ${MAVEN_USER_HOME}
 - cp $CI_PROJECT_DIR/m2_settings.xml ${MAVEN_USER_HOME}/settings.xml
@@ -48,16 +48,16 @@ Build:
 Build snapshot:
   stage: build_common
   script:
-  - "./mvnw clean deploy --projects topic,api --also-make"
+  - "./mvnw clean deploy --projects topic,ru.shadewallcorp.jiraTask.jiraManager.api --also-make"
   when: manual
   except:
   - tags
 
 Build chart snapshot:
   stage: build_common
-  image: todo_repo_host:8888/todo-repo-project-group-name/k8s-helm:v2.13.1
+  image: TODO_REPO_HOST:8888/TODO_REPO_PROJECT_GROUP/k8s-helm:v2.13.1
   before_script:
-  - helm repo add nexus-snapshots http://todo_repo_host:8081/repository/helm-snapshots/
+  - helm repo add nexus-snapshots http://TODO_REPO_HOST:8081/repository/helm-snapshots/
   script:
   - helm nexus-push nexus-snapshots helm/jira-manager --username "$NEXUS_USER" --password "$NEXUS_PASSWORD"
   when: manual
@@ -73,9 +73,9 @@ Build release:
 
 Build chart release:
   stage: build_common
-  image: todo_repo_host:8888/todo-repo-project-group-name/k8s-helm:v2.13.1
+  image: TODO_REPO_HOST:8888/TODO_REPO_PROJECT_GROUP/k8s-helm:v2.13.1
   before_script:
-  - helm repo add nexus-releases http://todo_repo_host:8081/repository/helm-releases/
+  - helm repo add nexus-releases http://TODO_REPO_HOST:8081/repository/helm-releases/
   script:
   - helm nexus-push nexus-releases helm/jira-manager --username "$NEXUS_USER" --password "$NEXUS_PASSWORD"
   only:
@@ -89,17 +89,17 @@ Build chart release:
 
 .install_template: &install_def
   stage: install
-  image: todo_repo_host:8888/todo-repo-project-group-name/k8s-helm:v2.13.1
+  image: TODO_REPO_HOST:8888/TODO_REPO_PROJECT_GROUP/k8s-helm:v2.13.1
   before_script:
     - sed -i'' -r 's|K8S_TOKEN|'$K8S_TOKEN'|g' ${CI_PROJECT_DIR}/kube_config
-    - helm repo add nexus-snapshots http://todo_repo_host:8081/repository/helm-snapshots/
+    - helm repo add nexus-snapshots http://TODO_REPO_HOST:8081/repository/helm-snapshots/
   script:
     - "helm install --debug nexus-snapshots/jira-manager
       --kubeconfig ${CI_PROJECT_DIR}/kube_config
       --name jira-manager-${CI_ENVIRONMENT_NAME}
       --namespace ${CI_ENVIRONMENT_NAME}
-      --set-file config=${CI_PROJECT_DIR}/impl/src/main/resources/application-k8s-test.conf
-      --set ingress.host=todo-kubernetes-test-stand-${CI_ENVIRONMENT_NAME}
+      --set-file config=${CI_PROJECT_DIR}/src/main/resources/application-k8s-test.conf
+      --set ingress.host=TODO_K8S_TEST_STAND-${CI_ENVIRONMENT_NAME}
       --set image.tag=${DOCKER_IMAGE_VERSION}
       --set java.debugEnabled=true
       --set nonProxyHosts=${NON_PROXY_HOSTS}"
@@ -107,16 +107,16 @@ Build chart release:
 
 .update_template: &update_def
   stage: update
-  image: todo_repo_host:8888/todo-repo-project-group-name/k8s-helm:v2.13.1
+  image: TODO_REPO_HOST:8888/TODO_REPO_PROJECT_GROUP/k8s-helm:v2.13.1
   before_script:
   - sed -i'' -r 's|K8S_TOKEN|'$K8S_TOKEN'|g' ${CI_PROJECT_DIR}/kube_config
-  - helm repo add nexus-snapshots http://todo_repo_host:8081/repository/helm-snapshots/
+  - helm repo add nexus-snapshots http://TODO_REPO_HOST:8081/repository/helm-snapshots/
   script:
   - "helm upgrade --debug jira-manager-${CI_ENVIRONMENT_NAME} nexus-snapshots/jira-manager
       --kubeconfig ${CI_PROJECT_DIR}/kube_config
       --namespace ${CI_ENVIRONMENT_NAME}
-      --set-file config=${CI_PROJECT_DIR}/impl/src/main/resources/application-k8s-test.conf
-      --set ingress.host=todo-kubernetes-test-stand-${CI_ENVIRONMENT_NAME}
+      --set-file config=${CI_PROJECT_DIR}/src/main/resources/application-k8s-test.conf
+      --set ingress.host=TODO_K8S_TEST_STAND-${CI_ENVIRONMENT_NAME}
       --set image.tag=${DOCKER_IMAGE_VERSION}
       --set java.debugEnabled=true
       --set nonProxyHosts=${NON_PROXY_HOSTS}"
@@ -124,7 +124,7 @@ Build chart release:
 
 .delete_template: &delete_def
   stage: delete
-  image: todo_repo_host:8888/todo-repo-project-group-name/k8s-helm:v2.13.1
+  image: TODO_REPO_HOST:8888/TODO_REPO_PROJECT_GROUP/k8s-helm:v2.13.1
   before_script:
   - sed -i'' -r 's|K8S_TOKEN|'$K8S_TOKEN'|g' ${CI_PROJECT_DIR}/kube_config
   script:
@@ -136,14 +136,14 @@ Build chart release:
     name: test199
   variables:
     DOCKER_IMAGE_VERSION: 199-SNAPSHOT
-    NON_PROXY_HOSTS: "localhost|*.todo_intranet.ru"
+    NON_PROXY_HOSTS: "localhost|*.TODO_intranet.ru"
 
 .namespace_test105: &namespace_test105_def
   environment:
     name: test105
   variables:
     DOCKER_IMAGE_VERSION: 105-SNAPSHOT
-    NON_PROXY_HOSTS: "localhost|*.todo_intranet.ru"
+    NON_PROXY_HOSTS: "localhost|*.TODO_intranet.ru"
 
 Build [DevOps199]:
   <<: *namespace_test199

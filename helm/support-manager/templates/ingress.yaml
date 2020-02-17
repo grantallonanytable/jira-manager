@@ -1,0 +1,33 @@
+apiVersion: "extensions/v1beta1"
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: "/_jira-manager/openapi"
+            backend:
+              serviceName: jira-manager
+              servicePort: http
+          - path: "/api/jira-manager/report"
+            backend:
+              serviceName: jira-manager
+              servicePort: http
+          - path: "/api/jira-manager/graphics"
+            backend:
+              serviceName: jira-manager
+              servicePort: http
+          - path: "/api/jira-manager/tasks"
+            backend:
+              serviceName: jira-manager
+              servicePort: http
+      {{- if .Values.ingress.host }}
+      host: {{ .Values.ingress.host | quote }}
+      {{- end}}

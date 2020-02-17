@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+      name: http
+      targetPort: http
+      protocol: TCP
+    {{- if .Values.java.debugEnabled }}
+    - port: 5005
+      name: "jvm-debug"
+      targetPort: "jvm-debug"
+      protocol: TCP
+    {{- end }}
+    - port: 8558
+      name: management
+      targetPort: management
+      protocol: TCP
+  selector:
+    app: {{ .Chart.Name }}

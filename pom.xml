@@ -36,7 +36,7 @@
     <completable.futures.version>0.3.2</completable.futures.version>
     <lagom.metrics.version>1.0.1</lagom.metrics.version>
     <dropwizard.metrics.version>3.2.6</dropwizard.metrics.version>
-    <assertj.version>3.11.1</assertj.version>
+    <assertj.version>3.27.7</assertj.version>
     <junit.jupiter.version>5.4.2</junit.jupiter.version>
     <akka.discovery.kubernetes.api.version>1.0.0</akka.discovery.kubernetes.api.version>
     <akka.cluster.custom.downing>0.0.13</akka.cluster.custom.downing>
